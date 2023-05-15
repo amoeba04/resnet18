@@ -19,5 +19,5 @@ CUDA_VISIBLE_DEVICES=0 python ensemble.py --model_num 2 --batch_size 128 --epoch
 ```
 
 ### Environments
-NVIDIA DGX A100
+NVIDIA DGX A100  
 CUDA 11.7, pytorch 2.0, torchvision 0.15.1, timm 0.6.12
