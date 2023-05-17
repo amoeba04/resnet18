@@ -8,6 +8,7 @@ import random
 import numpy as np
 import argparse
 import wandb
+import os
 
 
 def get_args_parser():
@@ -27,7 +28,7 @@ def get_args_parser():
     
     parser.add_argument('--seed', default=0, type=int)
     parser.add_argument('--wandb', action='store_true', help='Log using wandb')
-    parser.add_argument('--project', default='DL_23.1', type=str, help='Project name of wandb')
+    parser.add_argument('--project', default='DL-23.1', type=str, help='Project name of wandb')
     parser.add_argument('--id', default='resnet18s', type=str, help='Experiment ID of wandb')
     
     return parser
@@ -94,6 +95,7 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False,
 # Define the ResNet-18 model with pre-trained weights
 model = timm.create_model('resnet18', pretrained=True, num_classes=10)
 model = torch.compile(model)    # pytorch 2.0 feature
+torch.set_float32_matmul_precision('high')
 model = model.to(device)  # Move the model to the GPU
 
 # Define the loss function
@@ -175,5 +177,5 @@ for epoch in range(args.epochs):
 print('Finished Training')
 
 # Save the checkpoint of the last model
-PATH = wandb_name+'.pth'
+PATH = os.path.join('/raid/jaesin/lecture/Deep_Learning/ckpt', wandb_name+'.pth')
 torch.save(model.state_dict(), PATH)

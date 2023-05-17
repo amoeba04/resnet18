@@ -4,6 +4,7 @@ import torchvision.transforms as transforms
 import torch.nn as nn
 import timm
 import argparse
+import os
 
 def get_args_parser():
     parser = argparse.ArgumentParser('ResNet-18 ensemble evaluation script', add_help=False)
@@ -29,6 +30,7 @@ args = parser.parse_args()
 print(args)
 
 model_name = 'b{}ep{}ag{}l{}ls{}lsch{}labs{}wd{}opt{}'.format(args.batch_size, args.epochs, args.augment_type, args.lr, args.lr_scale, args.lr_sched_type, args.label_smoothing, args.weight_decay, args.optimizer_type)
+model_path = os.path.join('/raid/jaesin/lecture/Deep_Learning/ckpt', model_name)
 
 # Check if GPU is available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -50,7 +52,7 @@ for i in range(args.model_num):
     # Define the ResNet-18 model with pre-trained weights
     model = timm.create_model('resnet18', num_classes=10)
     model = torch.compile(model)
-    model.load_state_dict(torch.load(model_name+'s{}.pth'.format(i)))  # Load the trained weights
+    model.load_state_dict(torch.load(model_path+'s{}.pth'.format(i)))  # Load the trained weights
     model.eval()  # Set the model to evaluation mode
     model = model.to(device)  # Move the model to the GPU
     models.append(model)
